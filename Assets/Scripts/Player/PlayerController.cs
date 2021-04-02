@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    public Transform WaterReference;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -14,5 +17,10 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         
+
+
+
+
+
     }
 }

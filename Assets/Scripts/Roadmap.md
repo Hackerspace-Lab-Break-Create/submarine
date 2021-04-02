@@ -5,7 +5,7 @@ Control a submarine and clean the ocean. All kinds of trash that you pick up giv
 
 ## Roadmap
 
-##PLayer sprite
+### Player sprite
     - lula 1000 pixelized
 
 ### Player actions
@@ -27,25 +27,30 @@ Control a submarine and clean the ocean. All kinds of trash that you pick up giv
     - Mutant giant squid
 
 ### Powerups
-
+    -  knives
 
 ### Structure
     - Slightly active volcano (temperatures/mini quakes)
     - Ocean currents move around
         : Side scroll left and right randomly and trash moves opposite direction
     
+## Sound elements
+    - background music
+    - menu music
+    - ship sounds
+    - crash into ground sounds
+    - pick up trash sound
+    - net swooshing sound
+    - collision with net sound
+    
 ## MVP
-
-### Step 1
 - Submarine moving in ocean
+- Health bar/ 3 knives
 - Have a collectible ( plastic bottles), move vertically
 - Enemy should be fishing nets going with the current, you loose if you touch them, dragged down to the floor
 - Level as obsticle/enemy (tight passages with moving current)
 - Background/foreground elements
-- Background sound
-
-### Step 2
-- Submarine animation sinking
+- Sound elements
 
 ## Kanban
 

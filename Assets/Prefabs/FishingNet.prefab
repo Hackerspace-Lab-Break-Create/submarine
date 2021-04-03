@@ -118,7 +118,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95f804d07bbeb88409fe622d0984e274, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tide: {fileID: 0}
+  TideReference: {fileID: 4611674200183547748, guid: 84fa850143050a841a2a1483d8a33986, type: 3}
   maxSpeed: 0.72
 --- !u!61 &7654014068575093748
 BoxCollider2D:

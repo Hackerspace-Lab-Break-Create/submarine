@@ -1,26 +1,46 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Assets.Scripts.Player
 {
     public class PlayerInventory : MonoBehaviour
     {
-        public int KnifesCollectionCount = 1;
+        public int RepairKitCollectionCount = 1;
 
         public PlayerInventory()
         {
-            _knifes = 0;
+            _repairKits = 0;
         }
 
-        private int _knifes;
+        private int _repairKits;
 
-        public void AddKnife()
+        public bool AddKnife()
         {
-            _knifes += KnifesCollectionCount;
+            if (_repairKits == 3)
+            {
+                return false;
+            }
+
+            _repairKits += RepairKitCollectionCount;
+
+            return true;
         }
 
         public int GetKnifeCount()
         {
-            return _knifes;
+            return _repairKits;
+        }
+
+        internal bool UseRepairKit()
+        {
+            if (_repairKits == 0)
+            {
+                return false;
+            }
+
+            _repairKits--;
+
+            return true;
         }
     }
 }

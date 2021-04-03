@@ -5,8 +5,8 @@ using UnityEngine;
 public class TideController : MonoBehaviour
 {
     public float waitTime;
-    float timer = 0.0f;
-    public bool MovingRight { get; set; }
+    public float timer = 0.0f;
+    public bool MovingRight;
 
     // Start is called before the first frame update
     void Start()

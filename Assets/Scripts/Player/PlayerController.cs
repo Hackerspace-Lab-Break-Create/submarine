@@ -1,5 +1,6 @@
 using Assets.Scripts.Player;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -62,11 +63,11 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void OnMove(InputValue context)
+    public void OnMove(InputValue input)
     {
         Debug.Log("Move");
 
-        var value = context.Get<Vector2>();
+        var value = input.Get<Vector2>();
 
 
         var verticalMove = value.y;//Input.GetAxis("Vertical");
@@ -85,9 +86,27 @@ public class PlayerController : MonoBehaviour
        
     }
 
-    public void OnGrab(InputValue context)
+    public void OnGrab(InputValue input)
     {
         Debug.Log("LEts grab!");
+    }
+
+    public void OnRepair(InputValue input)
+    {
+        if (collidedNets.Count <= 0)
+        {
+            return;
+        }
+
+        var usedRepairKit = _playerInventory.UseRepairKit();
+
+        if (usedRepairKit)
+        {
+            var netToRemove = collidedNets.Last();
+            collidedNets.Remove(netToRemove);
+
+            Destroy(netToRemove);
+        }
     }
 
     #endregion

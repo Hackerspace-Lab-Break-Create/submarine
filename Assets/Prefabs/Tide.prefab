@@ -43,6 +43,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a321f22069f1094a8832e8a4912b4c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waitTime: 0
-  timer: 0
-  MovingRight: 0
+  waitTime: 10
+  netObj: {fileID: 589485565715707901, guid: 951be0bd21d9ab649bc2ada366625a87, type: 3}

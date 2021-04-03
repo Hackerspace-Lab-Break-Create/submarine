@@ -52,7 +52,11 @@ Control a submarine and clean the ocean. All kinds of trash that you pick up giv
 - Background/foreground elements
 - Sound elements
 
-## Kanban
+## Objects
+### Bottles
+ Collectable
+ only vacuum
 
-### Tasks
+ on collision only push them around
+
 

@@ -4,6 +4,7 @@
 TagManager:
   serializedVersion: 2
   tags:
+  - Trash
   - net
   layers:
   - Default
@@ -15,8 +16,8 @@ TagManager:
   - Player
   - Water
   - Land
+  - Collectables
   - FishingNets
-  - 
   - 
   - 
   - 

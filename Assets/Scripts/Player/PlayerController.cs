@@ -1,20 +1,21 @@
 using Assets.Scripts.Player;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
     //Editor Refs
-    public float HMoveSpeed = 5.0F;
-    public float VMoveSpeed = 5.0F;
+    public float HMoveSpeed = 10.0F;
+    public float VMoveSpeed = 10.0F;
 
     //Components
     private Rigidbody2D _playerRigidBody;
     private PlayerInventory _playerInventory;
 
 
-    private PlayerLocation _playerLocation;
-    private bool canMove = true;
+    private HashSet<GameObject> collidedNets = new HashSet<GameObject>();
+    private bool hasInput = true;
 
     // Start is called before the first frame update
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Called By engine")]
@@ -28,17 +29,17 @@ public class PlayerController : MonoBehaviour
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Called By engine")]
     public void Update()
     {
-        _playerLocation = _playerRigidBody.gravityScale == 1 ? PlayerLocation.ABOVEWATER : PlayerLocation.UNDERWATER;
+        
     }
 
     internal void UnblockInput()
     {
-        canMove = true;
+        hasInput = true;
     }
 
     internal void BlockInput()
     {
-        canMove = false;
+        hasInput = false;
     }
 
     #region Unity Events
@@ -53,6 +54,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collidedNets.Count < 3 && collision.gameObject.tag == "net")
+        {
+            collidedNets.Add(collision.gameObject);
+        }
+    }
+
     public void OnMove(InputValue context)
     {
         Debug.Log("Move");
@@ -63,14 +72,17 @@ public class PlayerController : MonoBehaviour
         var verticalMove = value.y;//Input.GetAxis("Vertical");
         var horizontalMove = value.x;//Input.GetAxis("Horizontal");
 
-        if ((verticalMove != 0 || horizontalMove != 0) && canMove)
-        {
-            _playerRigidBody.velocity = new Vector2(HMoveSpeed * horizontalMove, VMoveSpeed * verticalMove);
-        }
-        else
+        if (hasInput)
         {
             _playerRigidBody.velocity = Vector2.zero;
         }
+
+        if ((verticalMove != 0 || horizontalMove != 0) && hasInput)
+        {
+            _playerRigidBody.velocity = new Vector2(GetSpeed(HMoveSpeed, collidedNets.Count) * horizontalMove, GetSpeed(VMoveSpeed, collidedNets.Count) * verticalMove);
+        }
+        
+       
     }
 
     public void OnGrab(InputValue context)
@@ -85,4 +97,21 @@ public class PlayerController : MonoBehaviour
     {
         return _playerInventory;
     }
+
+    public float GetSpeed(float baseSpeed, int collisions)
+    {
+        if(collisions == 3)
+        {
+            return 0f;
+        }
+
+        if(collisions == 0)
+        {
+            return baseSpeed;
+        }
+
+        return baseSpeed * ((3 - collisions) * (1f / 3f));
+
+    }
+   
 }

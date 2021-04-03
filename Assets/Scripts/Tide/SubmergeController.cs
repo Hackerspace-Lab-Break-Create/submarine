@@ -33,7 +33,7 @@ public class SubmergeController : MonoBehaviour
         {
             rb.AddForce(new Vector2(0, 10f), ForceMode2D.Impulse);
         }
-        submarineGO.GetComponent<CapsuleController>().BlockInput();
+        submarineGO.GetComponent<PlayerController>().BlockInput();
 
 
     }
@@ -51,7 +51,7 @@ public class SubmergeController : MonoBehaviour
             rb.gravityScale = 1;
         }
 
-        submarineGO.GetComponent<CapsuleController>().UnblockInput();
+        submarineGO.GetComponent<PlayerController>().UnblockInput();
     }
 
 }

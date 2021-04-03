@@ -1,3 +1,4 @@
+using Assets.Scripts;
 using Assets.Scripts.Player;
 using System.Collections.Generic;
 using System.Linq;
@@ -83,15 +84,20 @@ public class PlayerController : MonoBehaviour
             if (horizontalMove != 0)
             {
                 direction = (int)horizontalMove;
+                var component = gameObject.GetComponent<SpriteRenderer>();
+
+                if (direction != 0)
+                {
+                    component.flipX = direction == 1 ? true : false;
+                }
+
             }
         }
-        
-       
     }
 
     public void OnGrab(InputValue input)
     {
-        var bottles = GameObject.FindGameObjectsWithTag("PlasticBottle");
+        var bottles = GameState.Trash;
         var closest = default(GameObject);
         var closestDistance = default(float);
 
@@ -146,6 +152,7 @@ public class PlayerController : MonoBehaviour
             differenceY < 0 ? Mathf.Lerp(0F, 5.0F, differenceY) : Mathf.Lerp(0F, -5.0F, differenceY)
             ), ForceMode2D.Impulse);
 
+        GameState.Trash.Remove(closest);
         StartCoroutine(DestroyTrash(closest));
     }
 
@@ -170,17 +177,17 @@ public class PlayerController : MonoBehaviour
             var netToRemove = collidedNets.Last();
             collidedNets.Remove(netToRemove);
 
+            GameState.Net.Remove(netToRemove);
             Destroy(netToRemove);
         }
     }
 
-    #endregion
-
-
-    public PlayerInventory GetInventory()
+    public void OnDebug(InputValue input)
     {
-        return _playerInventory;
+        GameState.Phase = GameState.GamePhase.PLAYING;
     }
+
+    #endregion
 
     public float GetSpeed(float baseSpeed, int collisions)
     {
@@ -197,5 +204,14 @@ public class PlayerController : MonoBehaviour
         return baseSpeed * ((3 - collisions) * (1f / 3f));
 
     }
-   
+
+    public PlayerInventory GetInventory()
+    {
+        return _playerInventory;
+    }
+
+   public int GetNetCount()
+    {
+        return collidedNets.Count;
+    }
 }

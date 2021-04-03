@@ -26,12 +26,12 @@ namespace Assets.Scripts.Player
             return true;
         }
 
-        public int GetKnifeCount()
+        public int GetRepairKitCount()
         {
             return _repairKits;
         }
 
-        internal bool UseRepairKit()
+        public bool UseRepairKit()
         {
             if (_repairKits == 0)
             {

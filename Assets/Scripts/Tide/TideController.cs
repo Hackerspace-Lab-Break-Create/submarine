@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class TideController : MonoBehaviour
@@ -7,6 +5,7 @@ public class TideController : MonoBehaviour
     public float waitTime;
     float timer = 0.0f;
     public bool MovingRight { get; set; }
+
 
     // Start is called before the first frame update
     void Start()
@@ -24,7 +23,7 @@ public class TideController : MonoBehaviour
             MovingRight = !MovingRight;
             timer -= waitTime;
         }
-            
-       
     }
+
+    
 }

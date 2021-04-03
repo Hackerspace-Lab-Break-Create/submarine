@@ -7,7 +7,7 @@
             "actions": [
                 {
                     "name": "Move",
-                    "type": "PassThrough",
+                    "type": "Value",
                     "id": "f27dbff7-38f4-4d05-a3e9-5b8d03f8dc52",
                     "expectedControlType": "Vector2",
                     "processors": "",
@@ -17,6 +17,22 @@
                     "name": "Grab",
                     "type": "Button",
                     "id": "b5acc778-e1e4-4f0c-b6d2-7c49fd6888a3",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Repair",
+                    "type": "Button",
+                    "id": "421a150a-19b1-4447-a886-16df1b0e001c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Debug",
+                    "type": "Button",
+                    "id": "c9870ac6-b529-469b-bc21-e2ade9ad62d5",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
@@ -86,6 +102,55 @@
                     "processors": "",
                     "groups": "",
                     "action": "Grab",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e9ed7532-7e3d-41bd-b24d-2cf4031e25ab",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Repair",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "82b133b3-465b-4b53-8045-55ce881c2550",
+                    "path": "<Keyboard>/h",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Debug",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "UI",
+            "id": "1a904f50-3842-4a39-8535-73a75ebb3fe9",
+            "actions": [
+                {
+                    "name": "Return to Menu (Gameover)",
+                    "type": "Button",
+                    "id": "19a30a31-0484-47b9-85b6-cc9b1ffef8bb",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "59a4b63e-35e9-4459-900f-5b9f30a8f7ce",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Return to Menu (Gameover)",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

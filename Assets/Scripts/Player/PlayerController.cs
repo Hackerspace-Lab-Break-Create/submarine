@@ -9,14 +9,15 @@ public class PlayerController : MonoBehaviour
     //Editor Refs
     public float HMoveSpeed = 10.0F;
     public float VMoveSpeed = 10.0F;
+    public GameObject UIText;
 
     //Components
     private Rigidbody2D _playerRigidBody;
     private PlayerInventory _playerInventory;
 
-
     private HashSet<GameObject> collidedNets = new HashSet<GameObject>();
     private bool hasInput = true;
+    private int direction;
 
     // Start is called before the first frame update
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Called By engine")]
@@ -65,13 +66,10 @@ public class PlayerController : MonoBehaviour
 
     public void OnMove(InputValue input)
     {
-        Debug.Log("Move");
-
         var value = input.Get<Vector2>();
 
-
-        var verticalMove = value.y;//Input.GetAxis("Vertical");
-        var horizontalMove = value.x;//Input.GetAxis("Horizontal");
+        var verticalMove = value.y;
+        var horizontalMove = value.x;
 
         if (hasInput)
         {
@@ -81,6 +79,11 @@ public class PlayerController : MonoBehaviour
         if ((verticalMove != 0 || horizontalMove != 0) && hasInput)
         {
             _playerRigidBody.velocity = new Vector2(GetSpeed(HMoveSpeed, collidedNets.Count) * horizontalMove, GetSpeed(VMoveSpeed, collidedNets.Count) * verticalMove);
+
+            if (horizontalMove != 0)
+            {
+                direction = (int)horizontalMove;
+            }
         }
         
        
@@ -88,7 +91,69 @@ public class PlayerController : MonoBehaviour
 
     public void OnGrab(InputValue input)
     {
-        Debug.Log("LEts grab!");
+        var bottles = GameObject.FindGameObjectsWithTag("PlasticBottle");
+        var closest = default(GameObject);
+        var closestDistance = default(float);
+
+        foreach (var bottle in bottles)
+        {
+            if (closest == null)
+            {
+                closest = bottle;
+                continue;
+            }
+
+            var LclosestDistance = Vector2.Distance(transform.position, closest.transform.position);
+            var currentDistance = Vector2.Distance(transform.position, bottle.transform.position);
+
+            if (currentDistance < LclosestDistance)
+            {
+                closest = bottle;
+                closestDistance = currentDistance;
+            }
+        }
+
+        Debug.DrawLine(transform.position, closest.transform.position, Color.red, 1.0F, false);
+
+        if (closestDistance > 5.0F)
+        {
+            var obj = Instantiate(UIText);
+            var text = obj.transform.Find("Canvas/Text").gameObject
+            .GetComponent<TMPro.TextMeshProUGUI>();
+
+            text.text = "Too far";
+
+            return;
+        }
+
+        var differenceX = closest.transform.position.x - transform.position.x;
+        var differenceY = closest.transform.position.y - transform.position.y;
+
+        if ((direction == -1 && differenceX > 0) || (direction == 1 && differenceX < 0))
+        {
+            var obj = Instantiate(UIText);
+            var text = obj.transform.Find("Canvas/Text").gameObject
+            .GetComponent<TMPro.TextMeshProUGUI>();
+
+            text.text = "Wrong side";
+
+            return;
+        }
+
+        closest.GetComponent<Rigidbody2D>()
+            .AddForce(
+            new Vector2(differenceX < 0 ? Mathf.Lerp(0F, 5.0F, differenceX) : Mathf.Lerp(0F, -5.0F, differenceX),
+            differenceY < 0 ? Mathf.Lerp(0F, 5.0F, differenceY) : Mathf.Lerp(0F, -5.0F, differenceY)
+            ), ForceMode2D.Impulse);
+
+        StartCoroutine(DestroyTrash(closest));
+    }
+
+    private IEnumerator<WaitForSeconds> DestroyTrash(GameObject trash)
+    {
+        yield return new WaitForSeconds(0.5F);
+
+        Destroy(trash);
     }
 
     public void OnRepair(InputValue input)

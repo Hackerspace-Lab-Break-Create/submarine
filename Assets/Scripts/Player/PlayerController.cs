@@ -1,72 +1,88 @@
 using Assets.Scripts.Player;
-using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    public GameObject WaterReference;
-    public BoxCollider2D PlayerWaterCollider;
-
+    //Editor Refs
     public float HMoveSpeed = 5.0F;
-    public float VMoveSpeed = 0.0F;
+    public float VMoveSpeed = 5.0F;
+
+    //Components
+    private Rigidbody2D _playerRigidBody;
+    private PlayerInventory _playerInventory;
+
 
     private PlayerLocation _playerLocation;
-
-    private Rigidbody2D _playerRigidBody;
-
+    private bool canMove = true;
 
     // Start is called before the first frame update
-    void Start()
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Called By engine")]
+    public void Start()
     {
         _playerRigidBody = gameObject.GetComponent<Rigidbody2D>();
+        _playerInventory = gameObject.GetComponent<PlayerInventory>();
     }
 
     // Update is called once per frame
-    void Update()
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Called By engine")]
+    public void Update()
     {
-        if(_playerLocation == PlayerLocation.ABOVEWATER)
-        {
-            _playerRigidBody.gravityScale = -1;
-        }
-
-        var LHMove = Input.GetAxis("Horizontal");
-        var LVMove = Input.GetAxis("Vertical");
-
-
-        if (_playerLocation == PlayerLocation.UNDERWATER)
-        {
-            gameObject.GetComponent<Rigidbody2D>()
-                .velocity = new Vector2(HMoveSpeed * LHMove, VMoveSpeed * LVMove);
-        }
+        _playerLocation = _playerRigidBody.gravityScale == 1 ? PlayerLocation.ABOVEWATER : PlayerLocation.UNDERWATER;
     }
 
-    private Collider2D GetPlayerWaterCollider2D()
+    internal void UnblockInput()
     {
-        var spriteRender = gameObject.GetComponent<SpriteRenderer>();
-
-        return Physics2D.OverlapBox(spriteRender.transform.position, spriteRender.bounds.size, 0.0F);
+        canMove = true;
     }
 
-    private Collider2D GetWaterCollider2D()
+    internal void BlockInput()
     {
-        var spriteRender = WaterReference.GetComponent<SpriteRenderer>();
-
-        return Physics2D.OverlapBox(spriteRender.transform.position, spriteRender.bounds.size, 0.0F);
+        canMove = false;
     }
 
-    private void OnCollisionExit2D(Collision2D collision)
+    #region Unity Events
+    public void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.name == "Water")
+        var gameObject = collision.gameObject;
+
+        if (gameObject.layer == LayerMask.NameToLayer("Collectables"))
         {
-            _playerLocation = PlayerLocation.ABOVEWATER;
+            var collectable = gameObject.GetComponent<ICollectable>();
+            collectable.OnCollect(this);
         }
     }
 
-    private void OnCollisionStay2D(Collision2D collision)
+    public void OnMove(InputValue context)
     {
-        if (collision.gameObject.name == "Water")
+        Debug.Log("Move");
+
+        var value = context.Get<Vector2>();
+
+
+        var verticalMove = value.y;//Input.GetAxis("Vertical");
+        var horizontalMove = value.x;//Input.GetAxis("Horizontal");
+
+        if ((verticalMove != 0 || horizontalMove != 0) && canMove)
         {
-            _playerLocation = PlayerLocation.UNDERWATER;
+            _playerRigidBody.velocity = new Vector2(HMoveSpeed * horizontalMove, VMoveSpeed * verticalMove);
         }
+        else
+        {
+            _playerRigidBody.velocity = Vector2.zero;
+        }
+    }
+
+    public void OnGrab(InputValue context)
+    {
+        Debug.Log("LEts grab!");
+    }
+
+    #endregion
+
+
+    public PlayerInventory GetInventory()
+    {
+        return _playerInventory;
     }
 }

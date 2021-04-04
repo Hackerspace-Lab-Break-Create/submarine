@@ -5,28 +5,42 @@ using UnityEngine.InputSystem;
 
 public class GameController : MonoBehaviour
 {
+    private static GameController _instance;
+
     public GameObject GameOverPrefab;
     public GameObject NetPrefab;
     public List<GameObject> TrashPrefabs;
 
-    public MeshCollider GameAreaMesh;
     public int InitialNets = 10;
     public int InitialTrash = 5;
 
-    private PlayerController _playerController;
+    private System.Func<PlayerController> _playerController;
     private float netTime = 0.0F;
     private float partialNetTime = 0.0F;
 
     private float trashTime = 0.0F;
     private float partialTrashTime = 0.0F;
+    private System.Func<MeshCollider> _gameAreaMesh;
 
+    public void Awake()
+    {
+        DontDestroyOnLoad(this);
+
+        if (_instance == null)
+        {
+            _instance = this;
+        } else
+        {
+            DestroyObject(gameObject);
+        }
+
+    }
 
     // Start is called before the first frame update
     public void Start()
     {
-        _playerController = GameObject
-            .FindGameObjectWithTag("Player")
-            .GetComponent<PlayerController>();
+        _playerController = () => { return GameState.PlayerController; };
+        _gameAreaMesh = () => { return GameState.SpawnMesh; };
     }
 
     // Update is called once per frame
@@ -40,7 +54,7 @@ public class GameController : MonoBehaviour
 
             SpawnTrash(true);
 
-            _playerController.gameObject.GetComponent<PlayerInput>().ActivateInput(); //Player
+            _playerController().gameObject.GetComponent<PlayerInput>().ActivateInput(); //Player
             gameObject.GetComponent<PlayerInput>().DeactivateInput(); //UI
 
             GameState.OldPhase = GameState.GamePhase.PLAYING;
@@ -53,7 +67,7 @@ public class GameController : MonoBehaviour
 
             text.text = GameState.GameOverMessage;
 
-            _playerController.gameObject.GetComponent<PlayerInput>().DeactivateInput(); //Player
+            _playerController().gameObject.GetComponent<PlayerInput>().DeactivateInput(); //Player
             gameObject.GetComponent<PlayerInput>().ActivateInput(); //UI
 
             GameState.OldPhase = GameState.GamePhase.GAMEOVER;
@@ -153,15 +167,15 @@ public class GameController : MonoBehaviour
 
     private Vector3 GetRandomLocation()
     {
-        var x = Random.Range(GameAreaMesh.bounds.min.x, GameAreaMesh.bounds.max.x);
-        var y = Random.Range(GameAreaMesh.bounds.min.y, GameAreaMesh.bounds.max.y);
+        var x = Random.Range(_gameAreaMesh().bounds.min.x, _gameAreaMesh().bounds.max.x);
+        var y = Random.Range(_gameAreaMesh().bounds.min.y, _gameAreaMesh().bounds.max.y);
 
         return new Vector3(x, y, 0f);
     }
 
     private void ValidateGameOver()
     {
-        if (_playerController.GetNetCount() == 3 && _playerController.GetInventory().GetRepairKitCount() == 0)
+        if (_playerController().GetNetCount() == 3 && _playerController().GetInventory().GetRepairKitCount() == 0)
         {
             GameState.GameOverMessage = "Submarine got stuck with nets!";
             GameState.Phase = GameState.GamePhase.GAMEOVER;

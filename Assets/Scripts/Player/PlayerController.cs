@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class PlayerController : MonoBehaviour
     public float HMoveSpeed = 10.0F;
     public float VMoveSpeed = 10.0F;
     public GameObject UIText;
+    public GameObject PauseMenu;
 
     //Components
     private Rigidbody2D _playerRigidBody;
@@ -26,6 +28,7 @@ public class PlayerController : MonoBehaviour
     {
         _playerRigidBody = gameObject.GetComponent<Rigidbody2D>();
         _playerInventory = gameObject.GetComponent<PlayerInventory>();
+        GameState.PlayerController = this;
     }
 
     // Update is called once per frame
@@ -185,6 +188,31 @@ public class PlayerController : MonoBehaviour
     public void OnDebug(InputValue input)
     {
         GameState.Phase = GameState.GamePhase.PLAYING;
+    }
+
+    public void OnPause(InputValue input)
+    {
+        if (GameState.Phase == GameState.GamePhase.PLAYING)
+        {
+            BlockInput();
+            PauseMenu.SetActive(true);
+            GameState.Phase = GameState.GamePhase.PAUSED;
+        }
+        else if (GameState.Phase == GameState.GamePhase.PAUSED)
+        {
+            UnblockInput();
+            PauseMenu.SetActive(false);
+            GameState.Phase = GameState.GamePhase.PLAYING;
+        }
+    }
+
+    public void OnUnPause(InputValue input)
+    {
+        if (GameState.Phase == GameState.GamePhase.PAUSED)
+        {
+            GameState.Phase = GameState.GamePhase.STARTMENU;
+            SceneManager.LoadScene("MainMenu");
+        }
     }
 
     #endregion

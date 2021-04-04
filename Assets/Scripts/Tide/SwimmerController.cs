@@ -22,4 +22,10 @@ public class SwimmerController : MonoBehaviour
     {
         rb.velocity = new Vector2(movingRight ? speed : -speed, 0f);
     }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        movingRight = !movingRight;
+        GetComponent<SpriteRenderer>().flipX = !GetComponent<SpriteRenderer>().flipX;
+    }
 }

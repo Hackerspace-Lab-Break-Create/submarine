@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 5482371653604301697}
   - component: {fileID: 5482371653604301710}
   - component: {fileID: 5482371653604301711}
-  m_Layer: 0
+  - component: {fileID: 3584225835205586332}
+  m_Layer: 11
   m_Name: whale_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -139,3 +140,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 0.7
   facingRight: 1
+--- !u!61 &3584225835205586332
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5482371653604301709}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 19.199999, y: 10.799999}
+    newSize: {x: 19.199999, y: 10.799999}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 19.199999, y: 10.799999}
+  m_EdgeRadius: 0

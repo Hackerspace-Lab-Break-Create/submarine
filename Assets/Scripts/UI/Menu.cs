@@ -35,4 +35,9 @@ public class Menu : MonoBehaviour
         gameObject.transform.Find("Menu").gameObject.SetActive(true);
         gameObject.transform.Find("Bindings").gameObject.SetActive(false);
     }
+
+    public void OnExitGame()
+    {
+        Application.Quit();
+    }
 }

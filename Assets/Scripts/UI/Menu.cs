@@ -1,31 +1,38 @@
+using Assets.Scripts;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using static UnityEngine.UI.Button;
 
 public class Menu : MonoBehaviour
 {
-    // Start is called before the first frame update
+    public Button _startButton { get; private set; }
+
     void Start()
     {
-        
     }
 
-    // Update is called once per frame
     void Update()
     {
         
     }
 
-    public void OnStartGame(GameObject gameObject)
+    public void OnStartGame()
     {
-
+        SceneManager.LoadScene("SpriteTest");
+        GameState.Phase = GameState.GamePhase.PLAYING;
     }
 
-    public void OnShowBindings(GameObject gameObject)
+    public void OnShowBindings()
     {
-
+        gameObject.transform.Find("Menu").gameObject.SetActive(false);
+        gameObject.transform.Find("Bindings").gameObject.SetActive(true);
     }
 
-    public void OnExitBindings(GameObject gameObject)
+    public void OnExitBindings()
     {
-
+        gameObject.transform.Find("Menu").gameObject.SetActive(true);
+        gameObject.transform.Find("Bindings").gameObject.SetActive(false);
     }
 }

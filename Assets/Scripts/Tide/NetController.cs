@@ -36,13 +36,29 @@ public class NetController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(!hasCollided)
+        if (collision.IsTouchingLayers(LayerMask.NameToLayer("Land")))
         {
-            hasCollided = true;
-            colliderRB = collision.gameObject.GetComponent<Rigidbody2D>();
+            return;
         }
-        
+
+        try
+        {
+            if (!hasCollided)
+            {
+                hasCollided = true;
+                colliderRB = collision.gameObject.GetComponent<Rigidbody2D>();
+
+                var playerController = collision.gameObject.GetComponent<PlayerController>();
+
+                var clips = playerController.GetSoundClips();
+                var audioSource = playerController.GetAudioSource();
+
+                audioSource.PlayOneShot(clips[6]);
+            }
+        }
+        catch (System.Exception)
+        {
+            Debug.Log("Error");
+        }
     }
-
-
 }

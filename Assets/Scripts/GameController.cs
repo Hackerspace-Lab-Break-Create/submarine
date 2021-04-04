@@ -11,17 +11,23 @@ public class GameController : MonoBehaviour
     public GameObject GameOverPrefab;
     public GameObject NetPrefab;
     public List<GameObject> TrashPrefabs;
+    public List<AudioClip> Clips;
+
 
     public int InitialNets = 10;
     public int InitialTrash = 5;
 
-    private System.Func<PlayerController> _playerController;
+    private AudioSource _audioSource;
+
     private float netTime = 0.0F;
     private float partialNetTime = 0.0F;
 
     private float trashTime = 0.0F;
     private float partialTrashTime = 0.0F;
+
+    private System.Func<PlayerController> _playerController;
     private System.Func<MeshCollider> _gameAreaMesh;
+    private System.Func<MainBG> _mainController;
 
     public void Awake()
     {
@@ -41,7 +47,9 @@ public class GameController : MonoBehaviour
     public void Start()
     {
         _playerController = () => { return GameState.PlayerController; };
+        _mainController = () => { return GameState.MainController; };
         _gameAreaMesh = () => { return GameState.SpawnMesh; };
+        _audioSource = gameObject.GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -51,6 +59,8 @@ public class GameController : MonoBehaviour
 
         if (GameState.OldPhase == GameState.GamePhase.STARTMENU && GameState.Phase == GameState.GamePhase.PLAYING)
         {
+            GameState.ResetState();
+
             if (GameState.canPlay)
             {
                 SpawnNets(true);
@@ -65,27 +75,30 @@ public class GameController : MonoBehaviour
         }
         else if (GameState.OldPhase == GameState.GamePhase.PLAYING && GameState.Phase == GameState.GamePhase.GAMEOVER)
         {
-            var obj = Instantiate(GameOverPrefab);
-            var text = obj.transform.Find("Canvas/Text").gameObject
-            .GetComponent<TMPro.TextMeshProUGUI>();
-
-            text.text = GameState.GameOverMessage;
-
             _playerController().gameObject.GetComponent<PlayerInput>().DeactivateInput(); //Player
             gameObject.GetComponent<PlayerInput>().ActivateInput(); //UI
 
             GameState.OldPhase = GameState.GamePhase.GAMEOVER;
 
             GameState.canPlay = false;
+
+            GameState.MainController.ShowLoseScreen();
+
+            _audioSource.PlayOneShot(Clips[0]);
         }
-        else if (GameState.OldPhase == GameState.GamePhase.GAMEOVER && GameState.Phase == GameState.GamePhase.STARTMENU)
+        else if ((GameState.OldPhase == GameState.GamePhase.GAMEOVER || GameState.OldPhase == GameState.GamePhase.WIN) && GameState.Phase == GameState.GamePhase.STARTMENU)
         {
             SceneManager.LoadScene("MainMenu");
             GameState.OldPhase = GameState.GamePhase.STARTMENU;
         }
         else if (GameState.OldPhase == GameState.GamePhase.PLAYING && GameState.Phase == GameState.GamePhase.WIN)
         {
-            SceneManager.LoadScene("Win");
+            _playerController().gameObject.GetComponent<PlayerInput>().DeactivateInput(); //Player
+            gameObject.GetComponent<PlayerInput>().ActivateInput(); //UI
+
+            GameState.MainController.ShowWinScreen();
+            _audioSource.PlayOneShot(Clips[1]);
+            
             GameState.OldPhase = GameState.GamePhase.WIN;
             GameState.canPlay = false;
         }
@@ -195,7 +208,7 @@ public class GameController : MonoBehaviour
             }
         }
     }
-    public void OnReturnToMenuGameover(InputValue input)
+    public void OnReturntoMenuGameover(InputValue input)
     {
         GameState.Phase = GameState.GamePhase.STARTMENU;
     }

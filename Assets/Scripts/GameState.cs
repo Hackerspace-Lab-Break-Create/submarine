@@ -1,14 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Scripts
 {
     internal static class GameState
     {
-        public static int Points;
+        public static int Points = 0;
 
-        public static GamePhase Phase = GameState.GamePhase.STARTMENU;
-        public static GamePhase OldPhase = GameState.GamePhase.STARTMENU;
+        public static GamePhase Phase = GamePhase.STARTMENU;
+        public static GamePhase OldPhase = GamePhase.STARTMENU;
 
         public static List<GameObject> Trash = new List<GameObject>();
         public static List<GameObject> Net = new List<GameObject>();
@@ -17,6 +18,8 @@ namespace Assets.Scripts
 
         public static PlayerController PlayerController { get; internal set; }
         public static MeshCollider SpawnMesh { get; internal set; }
+        public static MainBG MainController { get; internal set; }
+
         public static bool canPlay = false;
 
         public enum GamePhase
@@ -28,5 +31,11 @@ namespace Assets.Scripts
             WIN
         }
 
+        internal static void ResetState()
+        {
+            Trash = new List<GameObject>();
+            Net = new List<GameObject>();
+            Points = 0;
+        }
     }
 }

@@ -9,10 +9,13 @@ public class SubmergeController : MonoBehaviour
 
     Rigidbody2D rb;
 
+    private AudioSource _audiosource;
+
     // Start is called before the first frame update
     void Start()
     {
         rb = submarineGO.GetComponent<Rigidbody2D>();
+        _audiosource = gameObject.GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -44,10 +47,12 @@ public class SubmergeController : MonoBehaviour
 
         if (isSubmerging)
         {
+            _audiosource.Stop();
             rb.gravityScale = 0;
         }
         else
         {
+            _audiosource.Play();
             rb.gravityScale = 1;
         }
 

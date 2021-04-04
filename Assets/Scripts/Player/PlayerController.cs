@@ -3,6 +3,7 @@ using Assets.Scripts.Player;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
@@ -13,6 +14,8 @@ public class PlayerController : MonoBehaviour
     public float VMoveSpeed = 10.0F;
     public GameObject UIText;
     public GameObject PauseMenu;
+    public List<AudioClip> Clips;
+    public GameObject Tide;
 
     //Components
     private Rigidbody2D _playerRigidBody;
@@ -22,6 +25,11 @@ public class PlayerController : MonoBehaviour
     private bool hasInput = true;
     private int direction;
 
+    private AudioSource _audioSource;
+
+    private float sonarDelay = 5.0F;
+    private float sonarTimer = 0.0F;
+
     // Start is called before the first frame update
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Called By engine")]
     public void Start()
@@ -29,13 +37,26 @@ public class PlayerController : MonoBehaviour
         _playerRigidBody = gameObject.GetComponent<Rigidbody2D>();
         _playerInventory = gameObject.GetComponent<PlayerInventory>();
         GameState.PlayerController = this;
+
+        _audioSource = gameObject.GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Called By engine")]
     public void Update()
     {
-        
+        sonarTimer += Time.deltaTime;
+
+        if (sonarTimer > sonarDelay)
+        {
+            var random = Random.Range(0, 101);
+            if (random > 50)
+            {
+                _audioSource.PlayOneShot(Clips[3]);
+            }
+
+            sonarTimer = 0.0F;
+        }
     }
 
     internal void UnblockInput()
@@ -109,6 +130,7 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
+
         foreach (var bottle in bottles)
         {
             if (closest == null)
@@ -166,6 +188,8 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator<WaitForSeconds> DestroyTrash(GameObject trash)
     {
+        _audioSource.PlayOneShot(Clips[2]);
+
         yield return new WaitForSeconds(0.5F);
 
         Destroy(trash);
@@ -187,6 +211,9 @@ public class PlayerController : MonoBehaviour
 
             GameState.Net.Remove(netToRemove);
             Destroy(netToRemove);
+
+            var soundIdx = Random.Range(0, 2);
+            _audioSource.PlayOneShot(Clips[soundIdx]);
         }
     }
 
@@ -246,5 +273,15 @@ public class PlayerController : MonoBehaviour
    public int GetNetCount()
     {
         return collidedNets.Count;
+    }
+
+    public AudioSource GetAudioSource()
+    {
+        return _audioSource;
+    }
+
+    public List<AudioClip> GetSoundClips()
+    {
+        return Clips;
     }
 }

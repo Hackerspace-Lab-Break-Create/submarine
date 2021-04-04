@@ -16,8 +16,6 @@ public abstract class CollectablesBase : MonoBehaviour, ICollectable
 
     virtual public bool OnCollect(PlayerController player)
     {
-        Debug.Log("Collect!: " + this.name);
-
         return true;
     }
 }

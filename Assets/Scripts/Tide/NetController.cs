@@ -12,7 +12,7 @@ public class NetController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
+        rb = gameObject.GetComponent<Rigidbody2D>();
 
 
         _tideController = GameObject.FindGameObjectWithTag("Tide")            

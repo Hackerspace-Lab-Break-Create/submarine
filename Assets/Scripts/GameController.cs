@@ -2,6 +2,7 @@ using Assets.Scripts;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
@@ -50,14 +51,17 @@ public class GameController : MonoBehaviour
 
         if (GameState.OldPhase == GameState.GamePhase.STARTMENU && GameState.Phase == GameState.GamePhase.PLAYING)
         {
-            SpawnNets(true);
+            if (GameState.canPlay)
+            {
+                SpawnNets(true);
 
-            SpawnTrash(true);
+                SpawnTrash(true);
 
-            _playerController().gameObject.GetComponent<PlayerInput>().ActivateInput(); //Player
-            gameObject.GetComponent<PlayerInput>().DeactivateInput(); //UI
+                _playerController().gameObject.GetComponent<PlayerInput>().ActivateInput(); //Player
+                gameObject.GetComponent<PlayerInput>().DeactivateInput(); //UI
 
-            GameState.OldPhase = GameState.GamePhase.PLAYING;
+                GameState.OldPhase = GameState.GamePhase.PLAYING;
+            }
         }
         else if (GameState.OldPhase == GameState.GamePhase.PLAYING && GameState.Phase == GameState.GamePhase.GAMEOVER)
         {
@@ -71,23 +75,45 @@ public class GameController : MonoBehaviour
             gameObject.GetComponent<PlayerInput>().ActivateInput(); //UI
 
             GameState.OldPhase = GameState.GamePhase.GAMEOVER;
+
+            GameState.canPlay = false;
         }
         else if (GameState.OldPhase == GameState.GamePhase.GAMEOVER && GameState.Phase == GameState.GamePhase.STARTMENU)
         {
-            Debug.Log("Going to menu;");
-
-            //Volta para menu
+            SceneManager.LoadScene("MainMenu");
+            GameState.OldPhase = GameState.GamePhase.STARTMENU;
+        }
+        else if (GameState.OldPhase == GameState.GamePhase.PLAYING && GameState.Phase == GameState.GamePhase.WIN)
+        {
+            SceneManager.LoadScene("Win");
+            GameState.OldPhase = GameState.GamePhase.WIN;
+            GameState.canPlay = false;
+        }
+        else if (GameState.OldPhase == GameState.GamePhase.PLAYING && GameState.Phase == GameState.GamePhase.PAUSED)
+        {
+            GameState.canPlay = false;
+            GameState.OldPhase = GameState.GamePhase.PAUSED;
+        }
+        else if (GameState.OldPhase == GameState.GamePhase.PAUSED && GameState.Phase == GameState.GamePhase.PLAYING)
+        {
+            GameState.canPlay = true;
+            GameState.OldPhase = GameState.GamePhase.PLAYING;
         }
         #endregion
 
         #region GameFlow
         if (GameState.Phase == GameState.GamePhase.PLAYING)
         {
-            ValidateGameOver();
+            if (GameState.canPlay)
+            {
+                ValidateGameOver();
 
-            SpawnNets();
+                SpawnNets();
 
-            SpawnTrash();
+                SpawnTrash();
+
+                CheckTrash();
+            }
         }
         else if (GameState.Phase == GameState.GamePhase.GAMEOVER)
         {
@@ -100,11 +126,23 @@ public class GameController : MonoBehaviour
 
         #endregion
     }
-
-    public void OnReturnToMenuGameover(InputValue input)
+    private void ValidateGameOver()
     {
-        GameState.Phase = GameState.GamePhase.STARTMENU;
+        if (_playerController().GetNetCount() == 3 && _playerController().GetInventory().GetRepairKitCount() == 0)
+        {
+            GameState.GameOverMessage = "Submarine got stuck with nets!";
+            GameState.Phase = GameState.GamePhase.GAMEOVER;
+        }
     }
+
+    private void CheckTrash()
+    {
+        if (GameState.Trash.Count == 0)
+        {
+            GameState.Phase = GameState.GamePhase.WIN;
+        }
+    }
+
 
     private void SpawnTrash(bool initialSpawn = false)
     {
@@ -157,6 +195,10 @@ public class GameController : MonoBehaviour
             }
         }
     }
+    public void OnReturnToMenuGameover(InputValue input)
+    {
+        GameState.Phase = GameState.GamePhase.STARTMENU;
+    }
 
     private GameObject GetRandomTrash()
     {
@@ -173,12 +215,4 @@ public class GameController : MonoBehaviour
         return new Vector3(x, y, 0f);
     }
 
-    private void ValidateGameOver()
-    {
-        if (_playerController().GetNetCount() == 3 && _playerController().GetInventory().GetRepairKitCount() == 0)
-        {
-            GameState.GameOverMessage = "Submarine got stuck with nets!";
-            GameState.Phase = GameState.GamePhase.GAMEOVER;
-        }
-    }
 }

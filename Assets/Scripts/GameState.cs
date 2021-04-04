@@ -17,13 +17,15 @@ namespace Assets.Scripts
 
         public static PlayerController PlayerController { get; internal set; }
         public static MeshCollider SpawnMesh { get; internal set; }
+        public static bool canPlay = false;
 
         public enum GamePhase
         {
             PLAYING,
             GAMEOVER,
             STARTMENU,
-            PAUSED
+            PAUSED,
+            WIN
         }
 
     }

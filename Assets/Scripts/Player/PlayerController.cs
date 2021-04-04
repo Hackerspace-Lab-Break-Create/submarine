@@ -104,6 +104,11 @@ public class PlayerController : MonoBehaviour
         var closest = default(GameObject);
         var closestDistance = default(float);
 
+        if (bottles.Count == 0)
+        {
+            return;
+        }
+
         foreach (var bottle in bottles)
         {
             if (closest == null)

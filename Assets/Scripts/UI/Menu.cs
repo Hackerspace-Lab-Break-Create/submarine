@@ -20,7 +20,7 @@ public class Menu : MonoBehaviour
 
     public void OnStartGame()
     {
-        SceneManager.LoadScene("SpriteTest");
+        SceneManager.LoadScene("Main");
         GameState.Phase = GameState.GamePhase.PLAYING;
     }
 

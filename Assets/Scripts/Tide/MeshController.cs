@@ -7,5 +7,6 @@ public class MeshController : MonoBehaviour
     public void Awake()
     {
         GameState.SpawnMesh = gameObject.GetComponent<MeshCollider>();
+        GameState.canPlay = true;
     }
 }

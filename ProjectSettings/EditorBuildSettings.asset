@@ -11,5 +11,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SpriteTest.unity
     guid: 1ce023a1d745cc34d988d412c6e37de4
+  - enabled: 1
+    path: Assets/Scenes/Main.unity
+    guid: a91169d163e3d444c8fdaa10ed400388
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: bc450d6a96c889247a52e695b6e1a117, type: 2}

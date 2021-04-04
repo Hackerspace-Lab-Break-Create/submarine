@@ -29,7 +29,7 @@ public class GameUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        _repairKitCountUI.text = _playerInventory.GetRepairKitCount().ToString();
+        _repairKitCountUI.text = _playerInventory.GetRepairKitCount().ToString() + "/3";
 
         _trashCountUI.text = GameState.Trash.Count.ToString();
 
